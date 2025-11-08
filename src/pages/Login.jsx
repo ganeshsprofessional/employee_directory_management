@@ -15,16 +15,13 @@ export default function Login() {
       const res = await api.post("/auth/login", { email, password });
       const token = res.data.token;
       localStorage.setItem("token", token);
-      // fetch user details (simple fetch by decoding is not done; we call /users to get list and match)
-      // but minimal: store email as userEmail and role via small call:
-      const me = await api.get("/users"); // requires admin - not ideal for employee; instead decode server not provided. We'll call employees endpoint to check minimal.
-      // fallback: store email only
+      const me = await api.get("/users/me"); // requires admin - not ideal for employee; instead decode server not provided. We'll call employees endpoint to check minimal.
+
       localStorage.setItem("userEmail", email);
-      // Try to deduce role by making a small protected call to /employees (allowed for all roles)
-      // We need role to show admin UI; fetch role via a small endpoint would be ideal - but to keep simple: call /users and filter if exists (if token belongs to admin).
-      // Simpler approach: call /users and if 200 treat as admin otherwise ignore - but that's hacky. We'll instead call a lightweight endpoint not implemented; so user will still work but admin page requires admin role hardcoded at creation.
-      // For minimal flow, ask user to refresh after login to fetch role when needed. We'll attempt to fetch /employees and set role default 'employee'.
-      localStorage.setItem("role", "employee");
+      if (me.data.role === "admin") localStorage.setItem("role", "admin");
+      else if (me.data.role == "hr") localStorage.setItem("role", "hr");
+      else localStorage.setItem("role", "employee");
+      console.log(me);
       navigate("/");
     } catch (err) {
       setErr(err.response?.data?.message || err.message || "Login failed");

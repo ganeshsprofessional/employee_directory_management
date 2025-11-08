@@ -15,6 +15,10 @@ router.get("/", requireRole(["admin"]), async (req, res) => {
   }
 });
 
+router.get("/me", async (req, res) => {
+  return res.json(req.user);
+});
+
 router.post("/", requireRole(["admin"]), async (req, res) => {
   const { email, full_name, phone, role } = req.body;
   if (!email || !role)
