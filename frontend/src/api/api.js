@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_ROOT = "http://localhost:8888/.netlify/functions/api";
+const API_ROOT = "/api/";
 
 const api = axios.create({
   baseURL: API_ROOT,

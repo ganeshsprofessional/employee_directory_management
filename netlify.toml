@@ -1,0 +1,16 @@
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = "dist"
+  functions = "../backend-netlify/netlify/functions"
+
+[dev]
+  command = "vite"
+  functions = "../backend-netlify/netlify/functions"
+  port = 5173
+  targetPort = 8888
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api"
+  status = 200
